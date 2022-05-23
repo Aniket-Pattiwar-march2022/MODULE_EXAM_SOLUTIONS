@@ -1,0 +1,183 @@
+/* 1.	Create table DEPT with the following structure:-
+DEPTNO			int(2)
+DNAME			varchar(15)
+LOC				varchar(10)
+
+Insert the following rows into the DEPT table:-
+10	ACCOUNTING	NEW YORK
+20	RESEARCH		DALLAS
+30	SALES		CHICAGO
+40	OPERATIONS	BOSTON  */
+
+/*----------solution -------------------*/
+create table DEPT
+(
+deptno int,
+dname varchar(15),
+loc varchar(10)
+);
+insert into dept values(10, 'ACCOUNTING', 'NEW YORK');
+insert into dept values(20, 'RESEARCH', 'DALLAS');
+insert into dept values(30, 'SALES', 'CHICAGO');
+insert into dept values(40, 'OPERATIONS', 'BOSTON');
+
+show tables;
+drop table dept ;
+select * from dept;
+
+/* *********************************************************** */
+/*2.	Create table EMP with the following structure:-
+EMPNO			int(4)
+ENAME			varchar(10)
+JOB				varchar(9)
+HIREDATE			date
+SAL				float(7,2)
+COMM			float(7,2)
+DEPTNO			int(2)
+
+Insert the following rows into the EMP table:-
+7839	KING		MANAGER	1991-11-17	5000	NULL	10
+7698	BLAKE	CLERK	1981-05-01	2850	NULL	30
+7782	CLARK	MANAGER	1981-06-09	2450	NULL	10
+7566	JONES	CLERK	1981-04-02	2975	NULL 20
+7654	MARTIN	SALESMAN	1981-09-28	1250	1400	30
+7499	ALLEN	SALESMAN	1981-02-20	1600	300	30 */
+
+/*  solution*/
+create table emp
+(
+EMPNO int,
+ename varchar(10),
+JOB varchar(9),
+HIREDATE date,
+SAL float,
+COMM float,
+DEPTNO int
+);
+drop table emp;
+select * from emp;
+insert into emp values (7839, 'KING', 'MANAGER', '1991-11-17', 5000, NULL, 10);
+insert into emp values (7698, 'BLAKE', 'CLERK', '1981-05-01', 2850, NULL, 30);
+insert into emp values (7782, 'CLARK', 'MANAGER', '1981-06-09', 2450, NULL, 10);
+insert into emp values (7566, 'JONES', 'CLERK', '1981-04-02', 2975, NULL, 20);
+insert into emp values (7654, 'MARTIN', 'SALESMAN', '1981-09-28', 1250, 1400, 30);
+insert into emp values (7499, 'ALLEN', 'SALESMAN', '1981-02-20', 1600, 300, 30);
+
+/* *********************************************************** */
+/*
+Write SELECT statements to achieve the following:-
+3.	Display all the employees where SAL between 2500 and 5000 (inclusive of both).
+*/
+select * from emp where sal between 2500 and 5000;
+
+/* *********************************************************** */
+/*
+4.	Display all the ENAMEs in descending order of ENAME.
+*/
+select ename from emp 
+order by ename desc;
+
+/* *********************************************************** */
+/*
+5.	Display all the JOBs in lowercase.
+*/
+select lower(job) from emp;
+
+/* *********************************************************** */
+/*
+6.	Display the ENAMEs and the lengths of the ENAMEs.
+*/
+select ename ,length(ename) from emp;
+
+/* *********************************************************** */
+/*
+7.	Display the DEPTNO and the count of employees who belong to that DEPTNO .
+*/
+select deptno ,count(deptno) from emp 
+group by deptno;
+
+/* *********************************************************** */
+/*
+8.	Display the DNAMEs and the ENAMEs who belong to that DNAME.
+*/
+select dname, ename from dept,emp
+ where  dept.dname=emp.ename;
+
+/* *********************************************************** */
+/*
+9.	Display the position at which the string ‘AR’ occurs in the ename.
+*/
+select instr (ename,'AR') from emp;
+
+/* *********************************************************** */
+/*10.	Display the HRA for each employee given that HRA is 20% of SAL.
+*/
+select sal*0.2 HRA from emp;
+
+/* *********************************************************** */
+/*Section II									(10 marks)
+1.	Write a stored procedure by the name of PROC1 that accepts two varchar strings as parameters. 
+Your procedure should then determine if the first varchar string exists inside the varchar string.
+ For example, if string1 = ‘DAC’ and string2 = ‘CDAC, then string1 exists inside string2. 
+ The stored procedure should insert the appropriate message into a suitable TEMPP output table.
+ Calling program for the stored procedure need not be written.
+ */
+ delimiter //
+ create procedure PROC1(a varchar(25),b varchar(25), )
+ begin
+	if  select strcmp(a,b) then 
+     insert into tempp  values ('TRUE');
+	else
+       insert into tempp  values ('FALSE');
+	end if;
+end; //
+delimiter ;
+
+call PROC1('dac','cdac');
+drop table tempp;
+create table tempp(
+output varchar(25));
+select * from tempp;
+
+ /* *********************************************************** */
+ /* 2.	Create a stored function by the name of FUNC1 to take three parameters, the sides of a triangle.
+ The function should return a Boolean value:- TRUE if the triangle is valid, FALSE otherwise. 
+ A triangle is valid if the length of each side is less than the sum of the lengths of the other two sides. 
+ Check if the dimensions entered can form a valid triangle. Calling program for the stored function need not be written.
+ */
+ delimiter //
+ create function FUNC1(x float, y float, z float )
+returns boolean
+deterministic
+begin
+	if x+y <= z or x+z <= y or y+z <= x then
+		return TRUE;
+	else 
+		return FALSE;
+	end if;
+ end; //
+ delimiter ;
+ 
+ 
+ delimiter //
+ create procedure abc(x float, y float, z float )
+ begin
+	declare p boolean;
+	if  FUNC1(x,y,z) then 
+     insert into temp  values ('TRUE');
+	else
+       insert into temp  values ('FALSE');
+	end if;
+end; //
+delimiter ;
+
+
+create table temp(
+valid varchar(25) );
+
+ call abc(5.0,3.0,20.0);
+ select * from temp;
+
+
+ 
+
